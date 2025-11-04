@@ -76,4 +76,27 @@ router.delete('/deudas/:id', async (req, res) => {
   }
 });
 
+// PUT /api/clientes/deudas/:deudaId - Editar una deuda
+router.put('/deudas/:deudaId', async (req, res) => {
+  try {
+    const { deudaId } = req.params;
+    const { fecha, monto } = req.body;
+
+    const deuda = await Deuda.findByIdAndUpdate(
+      deudaId,
+      { fecha, monto },
+      { new: true, runValidators: true }
+    );
+
+    if (!deuda) {
+      return res.status(404).json({ error: 'Deuda no encontrada' });
+    }
+
+    res.json(deuda);
+  } catch (error) {
+    console.error('Error al editar deuda:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 module.exports = router;
